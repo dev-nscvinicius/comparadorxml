@@ -1,6 +1,6 @@
 # Comparador de XML - Versão 1.0.0.1
 
-O Comparador de XML é uma ferramenta desenvolvida em JavaScript, HTML e CSS para facilitar o processo de comparação de arquivos XML com numerações da SEFAZ (Secretaria da Fazenda) contidas em um arquivo de texto.
+O Comparador de XML é uma ferramenta desenvolvida em JavaScript, HTML e CSS com o auxílio do framework Electron e da biblioteca SweetAlert2 para facilitar o processo de comparação de arquivos XML com numerações da SEFAZ (Secretaria da Fazenda) contidas em um arquivo de texto.
 
 ## Funcionalidades
 
@@ -16,11 +16,11 @@ O projeto surgiu de uma necessidade na empresa em que se realizava a comparaçã
 ## Como Usar
 
 1. Clone ou baixe o repositório do projeto para o seu computador.
-2. Abra a pasta app e execute  `npm install` no Terminal. em seguida `npm start` ele irá Utilizar o node para executar.
+2. Abra a pasta app e execute `npm install` no Terminal. Em seguida, execute `npm start`. Ele irá utilizar o Node.js para executar.
 3. Na página inicial, especifique a pasta onde estão localizados os arquivos XML.
 4. Selecione o arquivo de texto que contém as numerações da SEFAZ.
 5. Clique no botão "Comparar" para iniciar a comparação.
-6. Após a comparação, um relatório será exibido na tela a esquerda , indicando quais arquivos XML possuem números coincidentes com os registrados no arquivo TXT.
+6. Após a comparação, um relatório será exibido na tela à esquerda, indicando quais arquivos XML possuem números coincidentes com os registrados no arquivo TXT.
 
 ## Manual de Uso
 
@@ -42,9 +42,3 @@ Este projeto está licenciado sob a Licença MIT. Consulte o arquivo `LICENSE` p
 ---
 
 *Este README foi criado para fornecer uma visão geral do projeto Comparador de XML. Para mais detalhes sobre o funcionamento interno, consulte o código-fonte.*
-
-
-
-
-
-
