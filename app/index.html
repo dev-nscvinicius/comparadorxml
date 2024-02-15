@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button  id="fecharJanelaBtn">X</button>
+  <div id="container">
+    <button id="selectxml" onclick="document.getElementById('xmlFiles').click();">
+        <img class="icon" src="img/xml.webp">XML's
+        <input type="file" id="xmlFiles" accept=".xml" multiple style="display: none;" onchange="xmlFilesLoaded()">
+    </button>
+    <button id="selecttxt" onclick="document.getElementById('txtFile').click();">
+      <img class="icon" src="img/txt.webp">TXT
+        <input type="file" id="txtFile" accept=".txt" style="display: none;" onchange="txtFileLoaded()">
+    </button>
+    <button id="btn" onclick="compareFiles()"> <img class="icon" src="img/lupa.webp">COMPARAR</button>
+</div>
+
+  <div id="results"></div>
+  <h2>&copy; ComparadorXML Versão 1.0.1 | Verifique a Documentação <a href="https://github.com/dev-nscvinicius/ComparadorXML" target="_blank">Clique Aqui</a></h2>
+<script>
+  
+document.getElementById('fecharJanelaBtn').addEventListener('click', function() {
+    
+    window.close();});
+    async function extractNumberFromXml(xmlContent) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+    const nNFElement = xmlDoc.querySelector('ide > nNF');
+    return nNFElement ? nNFElement.textContent : null;
+  }
+
+  function extractNumbersFromTxt(txtContent) {
+    const txtNumbers = txtContent.split('\n').map(number => number.trim());
+    return txtNumbers;
+  }
+
+  async function compareFiles() {
+    const xmlInput = document.getElementById('xmlFiles');
+    const txtInput = document.getElementById('txtFile');
+    const resultsDiv = document.getElementById('results');
+
+    const xmlFiles = xmlInput.files;
+    const txtFile = txtInput.files[0];
+
+
+    if (!xmlFiles.length || !txtFile) {
+      Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "Por Gentileza carregue os dois Arquivos",
+      showConfirmButton: false,
+      timer: 1600})
+    }
+
+    const txtContent = await readFileAsync(txtFile);
+    const txtNumbers = extractNumbersFromTxt(txtContent);
+
+    // Clear previous results
+    resultsDiv.innerHTML = '';
+
+    const promises = Array.from(xmlFiles).map(async xmlFile => {
+      const xmlContent = await readFileAsync(xmlFile);
+      const xmlNumber = await extractNumberFromXml(xmlContent);
+
+      // Compare and display result
+      const resultElement = document.createElement('div');
+      resultElement.textContent = `Número do XML: ${xmlNumber}, Número do TXT: ${xmlNumber}`;
+
+      if (txtNumbers.includes(xmlNumber)) {
+        resultElement.className = 'found';
+      } else {
+        resultElement.className = 'not-found';
+        resultElement.innerHTML += `, <span style="color: red;">Não encontrado no TXT</span>`;
+      }
+
+      resultsDiv.appendChild(resultElement);
+    });
+
+    await Promise.all(promises);
+
+    // Check for numbers in the TXT file that were not found in any XML file
+    const xmlNumbers = await Promise.all(
+      Array.from(xmlFiles).map(async xmlFile => {
+        const xmlContent = await readFileAsync(xmlFile);
+        return extractNumberFromXml(xmlContent);
+      })
+    );
+
+    for (const txtNumber of txtNumbers) {
+      if (!xmlNumbers.includes(txtNumber)) {
+        const resultElement = document.createElement('div');
+        resultElement.textContent = `Número do XML: Não encontrado, Número do TXT: ${txtNumber}`;
+        resultElement.className = 'not-found';
+        resultElement.innerHTML += `, <span style="color: red;">Não encontrado no XML</span>`;
+        resultsDiv.appendChild(resultElement);
+      }
+    }
+  }
+
+  function readFileAsync(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (e) => reject(e);
+      reader.readAsText(file);
+    });}
+
+    function xmlFilesLoaded() {
+    const xmlInput = document.getElementById('xmlFiles');
+    if (xmlInput.files.length > 0) {
+      Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Carga XML's Carregados com Sucesso!",
+      showConfirmButton: false,
+      timer: 1600
+});
+    }
+  }
+
+  function txtFileLoaded() {
+    const txtInput = document.getElementById('txtFile');
+    if (txtInput.files.length > 0) {
+      Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Carga TXT Carregados com Sucesso!",
+      showConfirmButton: false,
+      timer: 1600
+});
+    }}
+
+</script>
+</body>
+</html>
